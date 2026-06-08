@@ -19,13 +19,13 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
-    fullname: {
+    fullName: {
       type: String,
       required: true,
       trim: true,
       index: true,
     },
-    avtar: {
+    avatar: {
       type: String, // this is cloudinary url
       required: true,
     },
