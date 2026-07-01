@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const userSchema = new mongoose.Schema(
   {
     username: {
-      type: String,  
+      type: String,
       required: true,
       unique: true,
       lowercase: true,
@@ -34,10 +34,10 @@ const userSchema = new mongoose.Schema(
     },
     watchHistory: [
       {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Video",
-      },  
-    ],         
+      },
+    ],
     password: {
       type: String,
       required: [true, "password is required"],
@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
-); 
+);
 
 // bcrypt
 // userSchema.pre("save", async function (next) {
@@ -59,19 +59,18 @@ const userSchema = new mongoose.Schema(
 //   }
 // });
 
-
 // hashing the password
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);
-});  
-      
+});
+
 // camparing password using bcrypt by adding own method
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password); // return true or false
 };
-        
+
 // generating token using jwt = (payload, secret key, expiresIn)
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
