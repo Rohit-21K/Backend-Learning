@@ -1,11 +1,11 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema(
   {
     username: {
-      type: String,
+      type: String,  
       required: true,
       unique: true,
       lowercase: true,
@@ -36,8 +36,8 @@ const userSchema = new mongoose.Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "Video",
-      },
-    ],
+      },  
+    ],         
     password: {
       type: String,
       required: [true, "password is required"],
@@ -47,23 +47,31 @@ const userSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
-);
+); 
 
 // bcrypt
-userSchema.pre("save", function (next) {
-  if (!this.isModified("password")) {
-    next();
-  } else {
-    this.password = bcrypt.hash(this.password, 10);
-    next();
-  }
-});
+// userSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) {
+//     return next();
+//   } else {
+//     this.password = await bcrypt.hash(this.password, 10);
+//     next();
+//   }
+// });
 
+
+// hashing the password
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+
+  this.password = await bcrypt.hash(this.password, 10);
+});  
+      
 // camparing password using bcrypt by adding own method
-userSchema.methods.isPasswordCorrect = async function () {
+userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password); // return true or false
 };
-
+        
 // generating token using jwt = (payload, secret key, expiresIn)
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(

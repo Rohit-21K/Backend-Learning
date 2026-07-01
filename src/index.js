@@ -1,11 +1,6 @@
-import dotenv from "dotenv";
+import "./constants.js";
 import { app } from "./app.js";
 import connectDB from "./db/db-connection.js";
-
-// configuring dotenv
-dotenv.config({
-  path: "../.env",
-});
 
 // listennig to port and connecting Database
 
@@ -18,3 +13,4 @@ connectDB()
   .catch((err) => {
     console.log("MongoDb Connection Failed");
   });
+      
